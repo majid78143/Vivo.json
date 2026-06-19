@@ -1,0 +1,41 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Analytics – Admin{% endblock %}
+{% block topbar_title %}📊 Analytics{% endblock %}
+{% block content %}
+<div class="page page-transition">
+  <div class="stat-grid" style="padding:0;margin-bottom:16px">
+    {% for label,val,icon in [('Users Today',analytics.signups_today,'🆕'),('Orders Today',analytics.orders_today,'📦'),('Revenue Today','₹'~analytics.revenue_today|int,'💰'),('Active Users',analytics.active_users,'👥')] %}
+    <div class="stat-box">
+      <div style="font-size:1.5rem;margin-bottom:4px">{{ icon }}</div>
+      <div class="stat-box-value" style="font-size:1.4rem">{{ val }}</div>
+      <div class="stat-box-label">{{ label }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="card p-16 mb-16">
+    <div class="fw-800 mb-12">📈 Overview</div>
+    <div style="height:160px;display:flex;align-items:flex-end;gap:4px;padding:8px 0">
+      {% for pct in [40,65,30,80,55,90,70] %}
+      <div style="flex:1;background:linear-gradient(to top,var(--primary),var(--secondary));height:{{ pct }}%;border-radius:4px 4px 0 0;opacity:.8"></div>
+      {% endfor %}
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:4px">
+      {% for day in ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'] %}
+      <span class="text-xs text-muted">{{ day }}</span>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="card p-16">
+    <div class="fw-800 mb-12">🔥 Top Metrics</div>
+    {% for metric,val in [('Total Active Users',analytics.active_users),('Orders (All Time)',analytics.orders_today),('Today Revenue','₹'~analytics.revenue_today|int)] %}
+    <div class="flex-between mb-10" style="padding:10px;background:var(--bg2);border-radius:10px">
+      <span class="text-sm">{{ metric }}</span>
+      <span class="fw-800 text-primary">{{ val }}</span>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
+
