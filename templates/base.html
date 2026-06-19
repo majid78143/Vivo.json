@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#A78BFA">
+<meta name="description" content="DreamDrop – Shop, Earn & Win">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="csrf-token" content="{{ csrf_token() }}">
+<title>{% block title %}DreamDrop{% endblock %}</title>
+<link rel="manifest" href="/static/manifest.json">
+<link rel="icon" href="{{ favicon_url }}">
+<link rel="apple-touch-icon" href="{{ logo_url }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/main.css">
+{% block extra_head %}{% endblock %}
+</head>
+<body>
+<!-- Flash messages as hidden elements for JS to pick up -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% for category, msg in messages %}
+    <div class="flash-msg" data-type="{{ category }}" style="display:none">{{ msg }}</div>
+  {% endfor %}
+{% endwith %}
+
+{% block topbar %}{% endblock %}
+
+{% if announcement %}
+<div class="scroll-banner" style="border-radius:0;margin:0">
+  <div class="scroll-banner-inner">
+    {% for i in range(4) %}📢 {{ announcement }} &nbsp;&nbsp;&nbsp;{% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<main>{% block content %}{% endblock %}</main>
+
+{% block bottom_nav %}
+{% if current_user %}
+<nav class="bottom-nav">
+  <a href="/home" class="nav-item">
+    <span class="nav-icon">🏠</span>
+    <span>Home</span>
+  </a>
+  <a href="/rewards" class="nav-item">
+    <span class="nav-icon">🎁</span>
+    <span>Rewards</span>
+  </a>
+  <a href="/orders" class="nav-item">
+    <span class="nav-icon">📦</span>
+    <span>Orders</span>
+  </a>
+  <a href="/chat" class="nav-item">
+    <span class="nav-icon">💬</span>
+    <span>Chat</span>
+  </a>
+  <a href="/profile" class="nav-item">
+    <span class="nav-icon">👤</span>
+    <span>Profile</span>
+  </a>
+</nav>
+{% endif %}
+{% endblock %}
+
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- PWA install banner -->
+<div class="install-banner" id="installBanner" style="display:none">
+  <span style="font-size:1.4rem">📱</span>
+  <span class="install-banner-text">Install DreamDrop for the best experience!</span>
+  <button class="install-banner-btn" id="installBtn">Install</button>
+  <button onclick="document.getElementById('installBanner').style.display='none'" style="background:none;border:none;color:#fff;font-size:1.2rem;cursor:pointer;padding:4px">✕</button>
+</div>
+
+<!-- Firebase config -->
+<script>window.FIREBASE_CONFIG = {{ firebase_config | tojson }};</script>
+
+<!-- Ad scripts -->
+{{ ads.social_bar | safe }}
+{{ ads.popunder | safe }}
+
+<script src="/static/js/main.js"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>
+
