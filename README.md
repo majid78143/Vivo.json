@@ -1,2 +1,0 @@
-# Vivo.json
-Json file 
