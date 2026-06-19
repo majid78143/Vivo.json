@@ -51,11 +51,12 @@ if (loginForm) {
     showLoading(btn, true);
     try {
       const cred = await signInWithEmailAndPassword(auth, email, password);
-      if (!cred.user.emailVerified) {
-        showError('Please verify your email first. Check your inbox.');
-        await signOut(auth);
-        showLoading(btn, false);
-        return;
+      // if (!cred.user.emailVerified) {
+//   showError('Please verify your email first. Check your inbox.');
+//   await signOut(auth);
+//   showLoading(btn, false);
+//   return;
+// }
       }
       await sendTokenToServer(cred.user);
     } catch(err) {
