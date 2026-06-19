@@ -5,8 +5,8 @@ class Config:
     ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'admin@dreamdrop.com')
     ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'admin123')
     SITE_NAME = 'DreamDrop'
-    LOGO_URL = 'https://i.ibb.co/placeholder/logo.png'
-    FAVICON_URL = 'https://i.ibb.co/placeholder/favicon.ico'
+    LOGO_URL = 'https://cdn.postimage.me/2026/06/19/56415.png'
+    FAVICON_URL = 'https://cdn.postimage.me/2026/06/19/56415.png'
     THEME_PRIMARY = '#A78BFA'
     THEME_SECONDARY = '#F9A8D4'
     THEME_ACCENT = '#67E8F9'
