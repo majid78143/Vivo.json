@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}About – DreamDrop{% endblock %}
+{% block topbar %}
+<div class="page-header">
+  <button class="back-btn" onclick="history.back()">←</button>
+  <span class="page-title">ℹ️ About DreamDrop</span>
+</div>
+{% endblock %}
+{% block content %}
+<div class="page page-transition">
+  <div style="text-align:center;padding:28px;background:linear-gradient(135deg,var(--primary),var(--secondary));border-radius:var(--radius);margin-bottom:20px;color:#fff">
+    <img src="{{ logo_url }}" style="width:72px;height:72px;border-radius:20px;margin-bottom:12px;box-shadow:0 8px 24px rgba(0,0,0,.2)">
+    <div class="fw-900" style="font-size:1.5rem">DreamDrop</div>
+    <div style="font-size:.9rem;opacity:.9;margin-top:6px">✨ Shop. Earn. Win.</div>
+  </div>
+
+  <div class="card p-16 mb-16">
+    <div class="fw-800 mb-8">Our Mission</div>
+    <div class="text-sm" style="line-height:1.8;color:var(--text3)">
+      DreamDrop is your ultimate shopping & rewards destination. We believe shopping should be fun, rewarding, and exciting. Every purchase earns you coins, every spin could win you prizes, and every order brings you closer to your dreams.
+    </div>
+  </div>
+
+  <div class="card p-16 mb-16">
+    <div class="fw-800 mb-12">🌟 Why Choose Us?</div>
+    {% for item in [('🛍️','Curated Products','Handpicked quality items at great prices'),('🎁','Rewards System','Earn coins on every purchase and interaction'),('🏆','Real Winners','Transparent winner announcements every day'),('💬','24/7 Support','Always here to help via live chat'),('🔒','Secure Shopping','Firebase-powered secure authentication')] %}
+    <div style="display:flex;gap:12px;margin-bottom:14px">
+      <span style="font-size:1.3rem">{{ item[0] }}</span>
+      <div>
+        <div class="fw-700" style="font-size:.88rem">{{ item[1] }}</div>
+        <div class="text-xs text-muted">{{ item[2] }}</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px">
+    {% for stat in [('10K+','Happy Users'),('500+','Products'),('1K+','Winners')] %}
+    <div class="stat-card">
+      <div class="stat-value" style="font-size:1.2rem">{{ stat[0] }}</div>
+      <div class="stat-label">{{ stat[1] }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="text-center text-xs text-muted">
+    DreamDrop v1.0.0 · Made with ❤️ in India<br>
+    <a href="/contact" style="color:var(--primary)">Contact Us</a> · <a href="/terms" style="color:var(--primary)">Terms</a> · <a href="/privacy" style="color:var(--primary)">Privacy</a>
+  </div>
+  <div style="height:20px"></div>
+</div>
+{% endblock %}
+
