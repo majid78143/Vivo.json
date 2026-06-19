@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}429 – Too Many Requests{% endblock %}
+{% block bottom_nav %}{% endblock %}
+{% block content %}
+<div class="error-page">
+  <div style="font-size:4rem;margin-bottom:16px">⏳</div>
+  <div class="error-code">429</div>
+  <div class="error-msg">Too many requests. Please slow down!</div>
+  <a href="/home" class="btn btn-primary">Try Again</a>
+</div>
+{% endblock %}

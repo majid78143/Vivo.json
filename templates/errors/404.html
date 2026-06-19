@@ -1,12 +1,11 @@
 {% extends "base.html" %}
-{% block title %}403 – Forbidden{% endblock %}
+{% block title %}404 – Not Found{% endblock %}
 {% block bottom_nav %}{% endblock %}
 {% block content %}
 <div class="error-page">
-  <div style="font-size:4rem;margin-bottom:16px">🚫</div>
-  <div class="error-code">403</div>
-  <div class="error-msg">Access denied. You don't have permission.</div>
+  <div style="font-size:4rem;margin-bottom:16px">🔍</div>
+  <div class="error-code">404</div>
+  <div class="error-msg">Oops! Page not found.</div>
   <a href="/home" class="btn btn-primary">Go Home</a>
 </div>
 {% endblock %}
-
