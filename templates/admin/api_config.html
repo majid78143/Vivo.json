@@ -1,0 +1,62 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}API Config – Admin{% endblock %}
+{% block topbar_title %}⚙️ API Configuration{% endblock %}
+{% block content %}
+<div class="page page-transition">
+  <div class="alert alert-info">API keys are loaded from environment variables. Set them in your .env or Render/platform config.</div>
+
+  <div class="card p-16 mb-16">
+    <div class="fw-800 mb-12">🖼️ ImgBB Keys ({{ imgbb_keys | select | list | length }}/10 set)</div>
+    {% for i in range(10) %}
+    <div class="flex-between mb-8">
+      <span class="text-sm fw-600">Key {{ i+1 }}</span>
+      <span class="text-xs {% if imgbb_keys[i] %}text-primary{% else %}text-muted{% endif %}">{{ '✅ Set' if imgbb_keys[i] else '❌ Not set' }}</span>
+    </div>
+    {% endfor %}
+    <div class="text-xs text-muted mt-8">Set IMGBB_KEY_1 through IMGBB_KEY_10 in environment</div>
+  </div>
+
+  <div class="card p-16 mb-16">
+    <div class="fw-800 mb-12">🤖 Gemini Keys ({{ gemini_keys | select | list | length }}/10 set)</div>
+    {% for i in range(10) %}
+    <div class="flex-between mb-8">
+      <span class="text-sm fw-600">Key {{ i+1 }}</span>
+      <span class="text-xs {% if gemini_keys[i] %}text-primary{% else %}text-muted{% endif %}">{{ '✅ Set' if gemini_keys[i] else '❌ Not set' }}</span>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="card p-16 mb-16">
+    <div class="fw-800 mb-12">🧠 OpenAI Keys ({{ openai_keys | select | list | length }}/10 set)</div>
+    {% for i in range(10) %}
+    <div class="flex-between mb-8">
+      <span class="text-sm fw-600">Key {{ i+1 }}</span>
+      <span class="text-xs {% if openai_keys[i] %}text-primary{% else %}text-muted{% endif %}">{{ '✅ Set' if openai_keys[i] else '❌ Not set' }}</span>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="card p-16 mb-16">
+    <div class="fw-800 mb-12">📬 Integrations</div>
+    <div class="flex-between mb-8">
+      <span class="text-sm">Telegram Bot</span>
+      <span class="text-xs {% if telegram_token %}text-primary{% else %}text-muted{% endif %}">{{ '✅ Set' if telegram_token else '❌ Not set' }}</span>
+    </div>
+    <div class="flex-between">
+      <span class="text-sm">Discord Webhook</span>
+      <span class="text-xs {% if discord_webhook %}text-primary{% else %}text-muted{% endif %}">{{ '✅ Set' if discord_webhook else '❌ Not set' }}</span>
+    </div>
+  </div>
+
+  <div class="card p-16">
+    <div class="fw-800 mb-8">🔥 Firebase Config</div>
+    <div class="text-xs" style="background:var(--bg2);padding:12px;border-radius:10px;word-break:break-all;line-height:1.8">
+      <div><b>Project:</b> dreamdrop-3ca3d</div>
+      <div><b>Auth Domain:</b> dreamdrop-3ca3d.firebaseapp.com</div>
+      <div><b>Database:</b> dreamdrop-3ca3d-default-rtdb</div>
+      <div><b>Storage:</b> dreamdrop-3ca3d.firebasestorage.app</div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
