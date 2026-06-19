@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Register – DreamDrop{% endblock %}
+{% block bottom_nav %}{% endblock %}
+{% block content %}
+<div class="auth-page">
+  <div class="auth-card glass fade-in" style="padding:28px">
+    <div class="auth-logo">
+      <img src="{{ logo_url }}" alt="{{ site_name }}" class="auth-logo-img">
+      <div class="auth-logo-name">{{ site_name }}</div>
+      <div class="auth-logo-tagline">Create your account ✨</div>
+    </div>
+
+    <div id="authError" class="alert alert-error" style="display:none"></div>
+    <div id="authSuccess" class="alert alert-success" style="display:none"></div>
+
+    <button class="social-btn" id="googleBtn" style="margin-bottom:12px">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+      Continue with Google
+    </button>
+
+    <div class="auth-divider"><span>or register with email</span></div>
+
+    <form id="registerForm">
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input type="text" id="name" class="form-input" placeholder="Your name" required autocomplete="name">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" id="email" class="form-input" placeholder="you@email.com" required autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div style="position:relative">
+          <input type="password" id="password" class="form-input" placeholder="Min 8 characters" required style="padding-right:44px">
+          <button type="button" onclick="togglePw('password')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:1.1rem;cursor:pointer">👁️</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirm Password</label>
+        <input type="password" id="confirmPassword" class="form-input" placeholder="Repeat password" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-full" id="registerBtn" data-original="Create Account">
+        Create Account
+      </button>
+    </form>
+
+    <p class="auth-link">Already have an account? <a href="/login">Login</a></p>
+    <p style="font-size:.72rem;color:var(--text3);text-align:center;margin-top:12px">
+      By signing up you agree to our <a href="/terms" style="color:var(--primary)">Terms</a> &amp; <a href="/privacy" style="color:var(--primary)">Privacy Policy</a>
+    </p>
+  </div>
+</div>
+
+<script>function togglePw(id){const el=document.getElementById(id);el.type=el.type==='password'?'text':'password';}</script>
+<script type="module" src="/static/js/firebase-auth.js"></script>
+{% endblock %}
+
