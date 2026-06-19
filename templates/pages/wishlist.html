@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Wishlist – DreamDrop{% endblock %}
+{% block topbar %}
+<div class="page-header">
+  <button class="back-btn" onclick="history.back()">←</button>
+  <span class="page-title">❤️ Wishlist</span>
+</div>
+{% endblock %}
+{% block content %}
+<div class="page page-transition">
+  {% if items %}
+  <div class="products-grid">
+    {% for item in items %}
+    <div class="card">
+      <img src="{{ item.product_image or 'https://via.placeholder.com/200x150/EDE9FE/A78BFA?text=Product' }}"
+           class="card-img" loading="lazy">
+      <div class="card-body">
+        <div class="card-title">{{ item.product_name or 'Product' }}</div>
+        <div class="flex-between mt-8">
+          <span class="card-price">₹{{ item.product_price or '' }}</span>
+          <button onclick="toggleWishlist('{{ item.product_id }}',this)"
+                  style="background:none;border:none;font-size:1.2rem;cursor:pointer">❤️</button>
+        </div>
+        <a href="/product/{{ item.product_id }}" class="btn btn-primary btn-sm btn-full" style="margin-top:8px">Buy Now</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">❤️</div>
+    <div class="empty-title">Wishlist is Empty</div>
+    <div class="empty-text">Save items you love and buy them later!</div>
+    <a href="/products" class="btn btn-primary">Browse Products</a>
+  </div>
+  {% endif %}
+  <div style="height:20px"></div>
+</div>
+{% endblock %}

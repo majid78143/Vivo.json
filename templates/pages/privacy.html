@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Privacy Policy – DreamDrop{% endblock %}
+{% block topbar %}
+<div class="page-header">
+  <button class="back-btn" onclick="history.back()">←</button>
+  <span class="page-title">🔒 Privacy Policy</span>
+</div>
+{% endblock %}
+{% block content %}
+<div class="page page-transition">
+  <div class="card p-16">
+    <div class="fw-900" style="font-size:1.1rem;margin-bottom:4px">Privacy Policy</div>
+    <div class="text-xs text-muted mb-16">Last updated: {{ current_year }}</div>
+    {% for section in [
+      ('Information We Collect', 'We collect email, name, profile photo, and usage data to provide our services. Firebase Analytics may collect device info.'),
+      ('How We Use Information', 'We use your data to process orders, provide customer support, send notifications, and improve our platform.'),
+      ('Data Storage', 'Your data is stored securely in Firebase (Google Cloud). We do not sell your personal information to third parties.'),
+      ('Cookies', 'We use session cookies for authentication. You can disable cookies in your browser but some features may not work.'),
+      ('Third-Party Services', 'We use Firebase, ImgBB, and advertising networks. These services have their own privacy policies.'),
+      ('Your Rights', 'You can request deletion of your account and data by contacting us. You may opt out of marketing communications.'),
+      ('Contact', 'For privacy concerns, contact privacy@dreamdrop.com'),
+    ] %}
+    <div style="margin-bottom:16px">
+      <div class="fw-700 mb-4">{{ section[0] }}</div>
+      <div class="text-sm text-muted" style="line-height:1.7">{{ section[1] }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  <div style="height:20px"></div>
+</div>
+{% endblock %}

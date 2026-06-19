@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Order #{{ order.order_id }} – DreamDrop{% endblock %}
+{% block topbar %}
+<div class="page-header">
+  <button class="back-btn" onclick="history.back()">←</button>
+  <span class="page-title">Order #{{ order.order_id }}</span>
+</div>
+{% endblock %}
+{% block content %}
+<div class="page page-transition">
+  <!-- Status -->
+  <div class="card p-16 mb-16">
+    <div class="flex-between mb-12">
+      <span class="fw-800">Status</span>
+      <span class="status-badge status-{{ order.status }}">{{ order.status.replace('_',' ') | title }}</span>
+    </div>
+    {% if order.tracking_code %}
+    <div class="flex-between mb-8">
+      <span class="text-sm text-muted">Tracking Code</span>
+      <span class="fw-700 text-sm" onclick="copyText('{{ order.tracking_code }}','Copied!')" style="cursor:pointer;color:var(--primary)">{{ order.tracking_code }} 📋</span>
+    </div>
+    {% endif %}
+    {% if order.estimated_delivery %}
+    <div class="flex-between">
+      <span class="text-sm text-muted">Est. Delivery</span>
+      <span class="fw-700 text-sm">{{ order.estimated_delivery }}</span>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Order Tracker -->
+  <div class="card p-16 mb-16">
+    <div class="fw-800 mb-12">📍 Order Progress</div>
+    {% set statuses = ['pending','packed','shipped','out_for_delivery','delivered'] %}
+    {% set current_idx = statuses.index(order.status) if order.status in statuses else 0 %}
+    {% set labels = {'pending':'Order Placed','packed':'Order Packed','shipped':'Shipped','out_for_delivery':'Out for Delivery','delivered':'Delivered'} %}
+    {% for s in statuses %}
+    {% set idx = loop.index0 %}
+    <div class="tracker-step">
+      <div class="tracker-dot-wrap">
+        <div class="tracker-dot {% if idx <= current_idx %}done{% endif %} {% if idx == current_idx %}current{% endif %}"></div>
+        {% if not loop.last %}
+        <div class="tracker-line {% if idx < current_idx %}done{% endif %}"></div>
+        {% endif %}
+      </div>
+      <div class="tracker-info">
+        <div class="tracker-label {% if idx == current_idx %}text-primary{% endif %}">{{ labels[s] }}</div>
+        {% if idx == current_idx and order.updated_at %}
+        <div class="tracker-time">{{ order.updated_at[:16].replace('T',' ') }}</div>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Product -->
+  <div class="card p-16 mb-16">
+    <div class="fw-800 mb-12">🛍️ Product</div>
+    <div style="display:flex;gap:12px;align-items:center">
+      <img src="{{ order.product_image or 'https://via.placeholder.com/70/EDE9FE/A78BFA?text=P' }}"
+           style="width:70px;height:70px;border-radius:12px;object-fit:cover">
+      <div style="flex:1">
+        <div class="fw-700">{{ order.product_name }}</div>
+        <div class="text-sm text-muted">Qty: {{ order.quantity }}</div>
+        <div class="fw-800 text-primary mt-8" style="font-size:1.1rem">₹{{ order.price }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Address -->
+  {% if order.address %}
+  <div class="card p-16 mb-16">
+    <div class="fw-800 mb-12">📍 Delivery Address</div>
+    <div class="text-sm" style="line-height:1.8">
+      <div class="fw-700">{{ order.address.get('name','') }}</div>
+      <div>{{ order.address.get('address_line','') }}</div>
+      <div>{{ order.address.get('city','') }}, {{ order.address.get('state','') }} {{ order.address.get('pincode','') }}</div>
+      <div>📞 {{ order.address.get('phone','') }}</div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Actions -->
+  <a href="/chat" class="btn btn-secondary btn-full mb-8">💬 Chat with Support</a>
+
+  <div class="text-xs text-muted text-center mt-8">
+    Ordered on {{ order.created_at[:10] if order.created_at else '' }}
+  </div>
+  <div style="height:20px"></div>
+</div>
+{% endblock %}

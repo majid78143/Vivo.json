@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}FAQ – DreamDrop{% endblock %}
+{% block topbar %}
+<div class="page-header">
+  <button class="back-btn" onclick="history.back()">←</button>
+  <span class="page-title">❓ FAQ</span>
+</div>
+{% endblock %}
+{% block content %}
+<div class="page page-transition">
+  {% set faqs = [
+    ('How do I place an order?', 'Browse products, select one, fill your delivery address, and click Place Order. You\'ll receive a confirmation.'),
+    ('How do I earn coins?', 'You earn DreamCoins through daily rewards, spinning the wheel, referring friends, and completing orders.'),
+    ('How long does delivery take?', 'Delivery usually takes 5–10 business days. You\'ll get tracking details once your order is shipped.'),
+    ('Can I cancel my order?', 'Orders can be cancelled within 24 hours of placing. Contact us via Chat support.'),
+    ('How do coupons work?', 'Enter a valid coupon code at checkout to get a discount. Each coupon has specific terms.'),
+    ('What are mystery boxes?', 'Mystery boxes contain surprise items. You buy a box at a fixed price and receive a random prize!'),
+    ('How do I change my password?', 'Go to Settings > Account > Change Password. You\'ll need your current password.'),
+    ('Is my data secure?', 'Yes! We use Firebase Authentication and follow strict security practices to protect your data.'),
+  ] %}
+  {% for q, a in faqs %}
+  <div class="card mb-10" style="overflow:visible">
+    <details style="padding:14px 16px">
+      <summary style="cursor:pointer;font-size:.9rem;font-weight:700;list-style:none;display:flex;justify-content:space-between;align-items:center">
+        {{ q }}
+        <span style="font-size:1.1rem;color:var(--primary)">+</span>
+      </summary>
+      <div class="text-sm text-muted mt-8" style="line-height:1.7">{{ a }}</div>
+    </details>
+  </div>
+  {% endfor %}
+
+  <div class="card p-16 mt-16" style="text-align:center">
+    <div class="fw-800 mb-8">Still have questions?</div>
+    <a href="/chat" class="btn btn-primary">💬 Chat with Support</a>
+  </div>
+  <div style="height:20px"></div>
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Chat – DreamDrop{% endblock %}
+{% block topbar %}
+<div class="page-header">
+  <button class="back-btn" onclick="history.back()">←</button>
+  <div style="display:flex;align-items:center;gap:10px;flex:1">
+    <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-size:1.1rem">🌟</div>
+    <div>
+      <div class="fw-700" style="font-size:.9rem">DreamDrop Support</div>
+      <div class="text-xs text-muted">Online · Usually replies in minutes</div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block content %}
+<div style="padding-bottom:calc(var(--nav-height) + 56px)">
+  <div class="chat-messages" id="chatMessages">
+    <!-- Welcome -->
+    <div style="text-align:center;padding:16px 0">
+      <div style="font-size:2rem;margin-bottom:8px">👋</div>
+      <div class="text-sm text-muted">Welcome! How can we help you today?</div>
+    </div>
+
+    {% for msg in messages %}
+    <div class="msg-bubble msg-{{ msg.sender }}">
+      {% if msg.image %}
+      <img src="{{ msg.image }}" class="msg-image" onclick="openImg('{{ msg.image }}')">
+      {% endif %}
+      {% if msg.text %}<div>{{ msg.text }}</div>{% endif %}
+      <div class="msg-time">
+        {{ msg.sent_at[11:16] if msg.sent_at else '' }}
+        {% if msg.sender == 'user' %}
+          {% if msg.seen %}· Seen ✓✓{% else %}· Sent ✓{% endif %}
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Chat input -->
+<div class="chat-input-bar">
+  <form id="chatForm" style="display:flex;gap:8px;width:100%;align-items:center">
+    <label for="chatImage" style="cursor:pointer;font-size:1.3rem;flex-shrink:0" title="Attach image">📎</label>
+    <input type="file" id="chatImage" accept="image/*" style="display:none">
+    <input type="text" id="chatInput" class="chat-input" placeholder="Type a message..." autocomplete="off">
+    <button type="submit" class="chat-send-btn" id="chatSendBtn">➤</button>
+  </form>
+</div>
+
+<script>
+// Show image preview
+document.getElementById('chatImage').addEventListener('change', function() {
+  if (this.files[0]) Toast.show('📎 Image attached: ' + this.files[0].name, 'info');
+});
+
+// Auto-scroll
+setTimeout(() => {
+  const msgs = document.getElementById('chatMessages');
+  if (msgs) msgs.scrollTop = msgs.scrollHeight;
+}, 100);
+</script>
+{% endblock %}

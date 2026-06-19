@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% block title %}Home – DreamDrop{% endblock %}
+{% block topbar %}
+<div class="topbar">
+  <a class="topbar-logo" href="/home">
+    <img src="{{ logo_url }}" alt="{{ site_name }}">
+    <span>{{ site_name }}</span>
+  </a>
+  <div class="topbar-actions">
+    <a href="/notifications" class="topbar-btn" style="text-decoration:none">
+      🔔<span class="badge-dot"></span>
+    </a>
+    <a href="/wishlist" class="topbar-btn" style="text-decoration:none">🤍</a>
+    <a href="/cart" class="topbar-btn" style="text-decoration:none">🛒</a>
+  </div>
+</div>
+{% endblock %}
+{% block content %}
+<div class="ptr-indicator">🔄 Pull to refresh...</div>
+<div class="page page-transition">
+
+  <!-- Scrolling banner -->
+  {% if scroll_banners %}
+  <div class="scroll-banner mb-16">
+    <div class="scroll-banner-inner">
+      {% for b in scroll_banners %}
+        <span style="color:{{ b.color or '#fff' }}">{{ b.text }}</span>
+      {% endfor %}
+      {% for b in scroll_banners %}
+        <span style="color:{{ b.color or '#fff' }}">{{ b.text }}</span>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Hero Slider -->
+  {% if hero_banners %}
+  <div class="hero-slider mb-12">
+    {% for b in hero_banners %}
+    <div class="hero-slide {% if loop.first %}active{% endif %}">
+      <img src="{{ b.image or 'https://via.placeholder.com/430x220/A78BFA/fff?text=DreamDrop' }}" alt="{{ b.title }}" loading="lazy">
+      <div class="hero-slide-content">
+        {% if b.title %}<div class="hero-title">{{ b.title }}</div>{% endif %}
+        {% if b.subtitle %}<div class="hero-subtitle">{{ b.subtitle }}</div>{% endif %}
+        {% if b.btn_text %}
+        <a href="{{ b.btn_link or '#' }}" class="hero-btn">{{ b.btn_text }}</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="hero-dots">
+    {% for b in hero_banners %}
+    <div class="hero-dot {% if loop.first %}active{% endif %}"></div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="hero-slider mb-12">
+    <div class="hero-slide active">
+      <div style="height:220px;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px">
+        <div style="font-size:3rem">🌟</div>
+        <div class="hero-title" style="font-size:1.4rem">Welcome to DreamDrop!</div>
+        <div class="hero-subtitle">Shop, Earn Rewards & Win Prizes</div>
+        <a href="/products" class="hero-btn">Shop Now</a>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Native Banner Ad -->
+  <div class="mb-16">{{ ads.native_banner | safe }}</div>
+
+  <!-- Categories -->
+  {% if categories %}
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">🏷️ Categories</span>
+      <a href="/products" class="section-link">See all →</a>
+    </div>
+    <div class="categories-grid">
+      {% for cat in categories %}
+      <a href="/products?category={{ cat.name | urlencode }}" class="category-item">
+        <span class="category-icon">{{ cat.icon or '📦' }}</span>
+        <span class="category-label">{{ cat.name }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% else %}
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">🏷️ Categories</span>
+    </div>
+    <div class="categories-grid">
+      {% for item in [('👗','Fashion'),('📱','Electronics'),('🏠','Home'),('💄','Beauty'),('🎮','Gaming'),('📚','Books'),('🍕','Food'),('🎁','Gifts')] %}
+      <a href="/products?category={{ item[1] }}" class="category-item">
+        <span class="category-icon">{{ item[0] }}</span>
+        <span class="category-label">{{ item[1] }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Quick Actions -->
+  <div class="section">
+    <div class="section-header"><span class="section-title">⚡ Quick Actions</span></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+      {% for item in [('/rewards','🎡','Spin Wheel'),('/mystery-boxes','🎁','Mystery Box'),('/coupons','🎫','Coupons'),('/winners','🏆','Winners'),('/wishlist','❤️','Wishlist'),('/notifications','🔔','Alerts')] %}
+      <a href="{{ item[0] }}" style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px;border-radius:14px;background:var(--surface);border:1px solid var(--border);text-decoration:none;color:var(--text);transition:var(--transition)">
+        <span style="font-size:1.6rem">{{ item[1] }}</span>
+        <span style="font-size:.68rem;font-weight:600">{{ item[2] }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Featured Products -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">⭐ Featured</span>
+      <a href="/products" class="section-link">View all →</a>
+    </div>
+    {% if featured_products %}
+    <div class="products-grid" id="featuredGrid">
+      {% for p in featured_products %}
+      <div class="card slide-up" style="animation-delay:{{ loop.index0 * 0.08 }}s">
+        <div style="position:relative">
+          <img src="{{ p.image or 'https://via.placeholder.com/200x150/EDE9FE/A78BFA?text=Product' }}"
+               alt="{{ p.name }}" class="card-img" loading="lazy">
+          <button onclick="toggleWishlist('{{ p.id }}',this)"
+                  style="position:absolute;top:8px;right:8px;background:rgba(255,255,255,.9);border:none;border-radius:50%;width:32px;height:32px;font-size:1rem;cursor:pointer">🤍</button>
+          {% if p.type == 'digital' %}<span class="card-badge" style="position:absolute;top:8px;left:8px">Digital</span>{% endif %}
+        </div>
+        <div class="card-body">
+          <div class="card-title">{{ p.name | truncate(30) }}</div>
+          <div class="flex-between mt-8">
+            <span class="card-price">₹{{ p.price }}</span>
+            <a href="/product/{{ p.id }}" class="btn btn-primary btn-sm" style="padding:6px 14px;font-size:.75rem">Buy</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="products-grid">
+      {% for i in range(4) %}
+      <div class="skeleton skeleton-card"></div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Recent Winners -->
+  {% if recent_winners %}
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">🏆 Recent Winners</span>
+      <a href="/winners" class="section-link">See all →</a>
+    </div>
+    <div class="scroll-row">
+      {% for w in recent_winners %}
+      <div style="flex:0 0 160px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center">
+        <img src="{{ w.photo or 'https://ui-avatars.com/api/?name=' ~ w.name ~ '&background=A78BFA&color=fff&size=60' }}"
+             style="width:50px;height:50px;border-radius:50%;border:3px solid var(--primary-light);margin-bottom:8px">
+        <div style="font-size:.82rem;font-weight:700">{{ w.name | truncate(15) }}</div>
+        <div style="font-size:.72rem;color:var(--primary)">{{ w.prize }}</div>
+        <div style="font-size:.65rem;color:var(--text3)">🏆 Winner</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Testimonials -->
+  {% if testimonials %}
+  <div class="section">
+    <div class="section-header"><span class="section-title">💬 Reviews</span></div>
+    <div class="scroll-row">
+      {% for t in testimonials %}
+      <div class="testimonial-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">"{{ t.text | truncate(100) }}"</div>
+        <div class="testi-author">
+          <img src="{{ t.photo or 'https://ui-avatars.com/api/?name=' ~ t.name ~ '&size=32&background=F9A8D4&color=fff' }}"
+               class="testi-avatar" alt="{{ t.name }}">
+          <span class="testi-name">{{ t.name }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Banner Ad -->
+  <div class="mb-16" style="text-align:center">
+    {{ ads.native_banner | safe }}
+  </div>
+
+  <div style="height:20px"></div>
+</div>
+{% endblock %}

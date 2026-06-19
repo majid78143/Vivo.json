@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Mystery Boxes – DreamDrop{% endblock %}
+{% block topbar %}
+<div class="page-header">
+  <button class="back-btn" onclick="history.back()">←</button>
+  <span class="page-title">🎁 Mystery Boxes</span>
+</div>
+{% endblock %}
+{% block content %}
+<div class="page page-transition">
+  <div style="text-align:center;padding:20px;background:linear-gradient(135deg,#7C3AED,#F9A8D4);border-radius:var(--radius);margin-bottom:20px;color:#fff">
+    <div style="font-size:3rem;animation:float 3s ease-in-out infinite">🎁</div>
+    <div class="fw-900" style="font-size:1.2rem;margin-top:8px">Mystery Boxes</div>
+    <div style="font-size:.82rem;opacity:.9;margin-top:4px">Open to win amazing prizes!</div>
+  </div>
+
+  {% if boxes %}
+  <div class="products-grid">
+    {% for b in boxes %}
+    <div class="mystery-box">
+      <div class="mystery-box-icon">{{ b.icon or '🎁' }}</div>
+      <div class="fw-800 mb-8">{{ b.name or 'Mystery Box' }}</div>
+      <div class="text-sm text-muted mb-12">{{ b.description or 'Open to reveal your prize!' }}</div>
+      <div class="fw-900 text-primary mb-12">₹{{ b.price or 99 }}</div>
+      <button class="btn btn-primary btn-sm btn-full" onclick="buyMysteryBox('{{ b.id }}','{{ b.name }}','{{ b.price or 99 }}')">
+        🎁 Open Box
+      </button>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
+    {% for box in [('🎁','Basic Box','₹49','Random surprise inside!'),('💎','Premium Box','₹199','High-value prizes!'),('👑','Royal Box','₹499','Luxury items & rewards!'),('🌟','Mega Box','₹999','Grand prize chance!')] %}
+    <div class="mystery-box">
+      <div class="mystery-box-icon">{{ box[0] }}</div>
+      <div class="fw-800 mb-4">{{ box[1] }}</div>
+      <div class="text-xs text-muted mb-8">{{ box[3] }}</div>
+      <div class="fw-900 text-primary mb-8">{{ box[2] }}</div>
+      <button class="btn btn-primary btn-sm btn-full">Open Box</button>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="card p-16 mt-16">
+    <div class="fw-800 mb-8">🎯 How It Works</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      {% for step in [('1️⃣','Choose a mystery box'),('2️⃣','Complete payment'),('3️⃣','Open & reveal prize'),('4️⃣','Prize shipped to you!')] %}
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:1.1rem">{{ step[0] }}</span>
+        <span class="text-sm">{{ step[1] }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div style="height:20px"></div>
+</div>
+
+<script>
+function buyMysteryBox(id, name, price) {
+  Toast.show(`Opening ${name}... 🎁`, 'info', 2000);
+  setTimeout(() => window.location.href = '/product/' + id, 500);
+}
+</script>
+{% endblock %}

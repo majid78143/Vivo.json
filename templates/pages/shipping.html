@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Shipping Policy – DreamDrop{% endblock %}
+{% block topbar %}
+<div class="page-header">
+  <button class="back-btn" onclick="history.back()">←</button>
+  <span class="page-title">🚚 Shipping Policy</span>
+</div>
+{% endblock %}
+{% block content %}
+<div class="page page-transition">
+  <div class="card p-16">
+    <div class="fw-900" style="font-size:1.1rem;margin-bottom:4px">Shipping Policy</div>
+    <div class="text-xs text-muted mb-16">Last updated: {{ current_year }}</div>
+    {% for section in [
+      ('Processing Time', 'Orders are processed within 1–2 business days after payment confirmation.'),
+      ('Delivery Timeframe', 'Standard delivery: 5–10 business days. Express delivery (if available): 2–3 business days.'),
+      ('Tracking', 'Once shipped, you\'ll receive a tracking code in your Order Details page and via notification.'),
+      ('Shipping Charges', 'Shipping charges vary by location and order value. Free shipping may be available on orders above a certain amount.'),
+      ('Delivery Areas', 'We currently ship across India. International shipping is not available at this time.'),
+      ('Failed Delivery', 'If delivery fails, the courier will attempt redelivery. After 2 failed attempts, the order may be returned.'),
+      ('Damaged Items', 'If you receive a damaged item, contact us within 48 hours with photos for a replacement or refund.'),
+      ('Returns', 'Items can be returned within 7 days of delivery if unused and in original packaging.'),
+    ] %}
+    <div style="margin-bottom:16px">
+      <div class="fw-700 mb-4">{{ section[0] }}</div>
+      <div class="text-sm text-muted" style="line-height:1.7">{{ section[1] }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  <div style="height:20px"></div>
+</div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Notifications – DreamDrop{% endblock %}
+{% block topbar %}
+<div class="page-header">
+  <button class="back-btn" onclick="history.back()">←</button>
+  <span class="page-title">🔔 Notifications</span>
+</div>
+{% endblock %}
+{% block content %}
+<div class="page page-transition">
+  {% if notifications %}
+    {% for n in notifications %}
+    <div class="notif-item {% if not n.get('read') %}unread{% endif %}" data-notif="{{ n.id }}"
+         onclick="markRead('{{ n.id }}')">
+      <div class="notif-icon">
+        {{ '🛍️' if 'order' in n.get('title','').lower() else '🔔' if 'notification' in n.get('title','').lower() else '💬' if 'message' in n.get('title','').lower() else '🎁' }}
+      </div>
+      <div class="notif-body">
+        <div class="notif-title">{{ n.get('title','Notification') }}</div>
+        <div class="notif-text">{{ n.get('body','') }}</div>
+        <div class="notif-time">{{ n.get('created_at','')[:16].replace('T',' ') if n.get('created_at') else '' }}</div>
+      </div>
+    </div>
+    {% endfor %}
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">🔔</div>
+    <div class="empty-title">No Notifications</div>
+    <div class="empty-text">You're all caught up! Check back later.</div>
+  </div>
+  {% endif %}
+  <div style="height:20px"></div>
+</div>
+{% endblock %}

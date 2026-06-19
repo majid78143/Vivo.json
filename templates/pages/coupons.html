@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Coupons – DreamDrop{% endblock %}
+{% block topbar %}
+<div class="page-header">
+  <button class="back-btn" onclick="history.back()">←</button>
+  <span class="page-title">🎫 My Coupons</span>
+</div>
+{% endblock %}
+{% block content %}
+<div class="page page-transition">
+  <!-- Apply a code -->
+  <div class="card p-16 mb-16">
+    <div class="fw-800 mb-8">Have a Code?</div>
+    <div style="display:flex;gap:8px">
+      <input type="text" id="manualCouponInput" class="form-input" placeholder="Enter coupon code" style="flex:1;text-transform:uppercase">
+      <button class="btn btn-primary btn-sm" onclick="document.getElementById('couponInput') && (document.getElementById('couponInput').value=document.getElementById('manualCouponInput').value,applyCoupon())">Check</button>
+    </div>
+  </div>
+
+  {% if coupons %}
+  <div class="fw-800 mb-12">🎫 Available Coupons</div>
+  {% for c in coupons %}
+  <div class="coupon-card">
+    <div class="flex-between">
+      <div>
+        <div class="coupon-code" onclick="copyText('{{ c.code }}','Coupon code copied!')">{{ c.code }} 📋</div>
+        <div class="coupon-discount mt-8">
+          {% if c.type == 'percent' %}{{ c.discount }}% OFF{% else %}₹{{ c.discount }} OFF{% endif %}
+        </div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="copyText('{{ c.code }}','Code copied! Use it at checkout.')">Use</button>
+    </div>
+  </div>
+  {% endfor %}
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">🎫</div>
+    <div class="empty-title">No Coupons</div>
+    <div class="empty-text">Earn coupons by completing orders and referring friends!</div>
+    <a href="/rewards" class="btn btn-primary">Earn Rewards</a>
+  </div>
+  {% endif %}
+  <div style="height:20px"></div>
+</div>
+{% endblock %}

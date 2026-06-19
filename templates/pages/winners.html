@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Winners – DreamDrop{% endblock %}
+{% block topbar %}
+<div class="page-header">
+  <button class="back-btn" onclick="history.back()">←</button>
+  <span class="page-title">🏆 Hall of Winners</span>
+</div>
+{% endblock %}
+{% block content %}
+<div class="page page-transition">
+  <div style="text-align:center;padding:20px;background:linear-gradient(135deg,var(--primary),var(--secondary));border-radius:var(--radius);margin-bottom:20px;color:#fff">
+    <div style="font-size:2.5rem;margin-bottom:8px">🏆</div>
+    <div class="fw-900" style="font-size:1.2rem">Hall of Winners</div>
+    <div style="font-size:.82rem;opacity:.9;margin-top:4px">Real winners, real prizes!</div>
+  </div>
+
+  {% if winners %}
+    {% for w in winners %}
+    <div class="winner-card slide-up" style="animation-delay:{{ loop.index0 * 0.08 }}s">
+      <img src="{{ w.photo or 'https://ui-avatars.com/api/?name=' ~ w.get('name','W') ~ '&size=50&background=A78BFA&color=fff' }}"
+           class="winner-avatar" alt="{{ w.get('name','Winner') }}">
+      <div class="winner-info">
+        <div class="winner-name">{{ w.get('name','Anonymous') }}</div>
+        <div class="winner-prize">🎁 {{ w.get('prize','Prize') }}</div>
+        <div class="winner-time">{{ w.get('won_at','')[:10] if w.get('won_at') else 'Recently' }}</div>
+      </div>
+      <div class="winner-badge">🏆</div>
+    </div>
+    {% endfor %}
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">🏆</div>
+    <div class="empty-title">No Winners Yet</div>
+    <div class="empty-text">Be the first to win! Spin the wheel and play mystery boxes.</div>
+    <a href="/rewards" class="btn btn-primary">Try Your Luck</a>
+  </div>
+  {% endif %}
+  <div style="height:20px"></div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Products – DreamDrop{% endblock %}
+{% block topbar %}
+<div class="page-header">
+  <button class="back-btn" onclick="history.back()">←</button>
+  <span class="page-title">🛍️ Products{% if cat_filter %} · {{ cat_filter }}{% endif %}</span>
+  <a href="/products" style="margin-left:auto;background:none;border:none;font-size:1rem;color:var(--primary);text-decoration:none">🔍</a>
+</div>
+{% endblock %}
+{% block content %}
+<div class="page page-transition">
+  {% if products %}
+  <div class="products-grid">
+    {% for p in products %}
+    <div class="card slide-up" style="animation-delay:{{ loop.index0 * 0.06 }}s">
+      <div style="position:relative">
+        <img src="{{ p.image or 'https://via.placeholder.com/200x150/EDE9FE/A78BFA?text=' ~ p.name }}"
+             alt="{{ p.name }}" class="card-img" loading="lazy">
+        <button onclick="toggleWishlist('{{ p.id }}',this)"
+                style="position:absolute;top:8px;right:8px;background:rgba(255,255,255,.9);border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:.9rem">🤍</button>
+      </div>
+      <div class="card-body">
+        <div class="card-title">{{ p.name | truncate(28) }}</div>
+        <div class="flex-between mt-8">
+          <span class="card-price">₹{{ p.price }}</span>
+          <a href="/product/{{ p.id }}" class="btn btn-primary btn-sm" style="padding:5px 12px;font-size:.72rem">Buy</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">🛍️</div>
+    <div class="empty-title">No Products Found</div>
+    <div class="empty-text">Check back soon for new arrivals!</div>
+    <a href="/home" class="btn btn-primary">Go Home</a>
+  </div>
+  {% endif %}
+  <div style="height:20px"></div>
+</div>
+{% endblock %}

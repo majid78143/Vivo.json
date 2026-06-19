@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}Profile – DreamDrop{% endblock %}
+{% block topbar %}
+<div class="topbar">
+  <span class="page-title">👤 My Profile</span>
+  <a href="/settings" class="topbar-btn" style="text-decoration:none">⚙️</a>
+</div>
+{% endblock %}
+{% block content %}
+<div class="page-transition">
+  <div class="profile-hero">
+    <img src="{{ current_user.photo or 'https://ui-avatars.com/api/?name=' ~ current_user.name ~ '&size=80&background=A78BFA&color=fff' }}"
+         class="profile-avatar" alt="{{ current_user.name }}"
+         data-coins="{{ user_data.get('coins',0) }}">
+    <div class="profile-name">{{ current_user.name }}</div>
+    <div class="profile-email">{{ current_user.email }}</div>
+    {% if user_data.get('vip') %}
+    <div class="vip-badge">👑 VIP Member</div>
+    {% endif %}
+    {% if user_data.get('referral_code') %}
+    <div style="margin-top:8px;font-size:.75rem;color:rgba(255,255,255,.8)">
+      Referral: <span style="font-weight:700;cursor:pointer" onclick="copyText('{{ user_data.referral_code }}','Referral code copied!')">{{ user_data.referral_code }} 📋</span>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="page">
+    <!-- Stats -->
+    <div class="profile-stats mb-16">
+      <div class="stat-card">
+        <div class="stat-value">{{ user_data.get('coins',0) }}</div>
+        <div class="stat-label">💰 Coins</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">{{ user_data.get('referral_count',0) }}</div>
+        <div class="stat-label">👥 Referrals</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">0</div>
+        <div class="stat-label">📦 Orders</div>
+      </div>
+    </div>
+
+    <!-- Edit Profile -->
+    <div class="card p-16 mb-16">
+      <div class="fw-800 mb-12">✏️ Edit Profile</div>
+      <form action="/profile/update" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" name="name" class="form-input" value="{{ current_user.name }}" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input type="tel" name="phone" class="form-input" value="{{ user_data.get('phone','') }}" placeholder="10-digit number">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Profile Photo</label>
+          <input type="file" name="photo" class="form-input" accept="image/*">
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">Save Changes</button>
+      </form>
+    </div>
+
+    <!-- Menu -->
+    <div class="menu-list mb-16">
+      <a href="/orders" class="menu-item">
+        <span class="menu-icon">📦</span>
+        <span class="menu-text">My Orders</span>
+        <span class="menu-arrow">›</span>
+      </a>
+      <a href="/wishlist" class="menu-item">
+        <span class="menu-icon">❤️</span>
+        <span class="menu-text">Wishlist</span>
+        <span class="menu-arrow">›</span>
+      </a>
+      <a href="/coupons" class="menu-item">
+        <span class="menu-icon">🎫</span>
+        <span class="menu-text">My Coupons</span>
+        <span class="menu-arrow">›</span>
+      </a>
+      <a href="/rewards" class="menu-item">
+        <span class="menu-icon">🎁</span>
+        <span class="menu-text">Rewards</span>
+        <span class="menu-arrow">›</span>
+      </a>
+      <a href="/notifications" class="menu-item">
+        <span class="menu-icon">🔔</span>
+        <span class="menu-text">Notifications</span>
+        <span class="menu-arrow">›</span>
+      </a>
+      <a href="/settings" class="menu-item">
+        <span class="menu-icon">⚙️</span>
+        <span class="menu-text">Settings</span>
+        <span class="menu-arrow">›</span>
+      </a>
+      <a href="/about" class="menu-item">
+        <span class="menu-icon">ℹ️</span>
+        <span class="menu-text">About DreamDrop</span>
+        <span class="menu-arrow">›</span>
+      </a>
+    </div>
+
+    <button id="logoutBtn" class="btn btn-danger btn-full">🚪 Logout</button>
+    <div style="height:20px"></div>
+  </div>
+</div>
+<script type="module" src="/static/js/firebase-auth.js"></script>
+{% endblock %}

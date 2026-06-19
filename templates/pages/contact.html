@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Contact – DreamDrop{% endblock %}
+{% block topbar %}
+<div class="page-header">
+  <button class="back-btn" onclick="history.back()">←</button>
+  <span class="page-title">📩 Contact Us</span>
+</div>
+{% endblock %}
+{% block content %}
+<div class="page page-transition">
+  <div class="card p-16 mb-16">
+    <div class="fw-800 mb-4" style="font-size:1.1rem">Get in Touch</div>
+    <div class="text-sm text-muted mb-16">We typically respond within 24 hours.</div>
+    <form action="/contact/submit" method="POST">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <label class="form-label">Your Name</label>
+        <input type="text" name="name" class="form-input" placeholder="Full name" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" name="email" class="form-input" placeholder="you@email.com" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Message</label>
+        <textarea name="message" class="form-input" rows="5" placeholder="Write your message here..." required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary btn-full">Send Message 📨</button>
+    </form>
+  </div>
+
+  <div class="card p-16 mb-16">
+    <div class="fw-800 mb-12">Other Ways to Reach Us</div>
+    {% for item in [('💬','Live Chat','/chat','Chat with support now'),('📧','Email','mailto:support@dreamdrop.com','support@dreamdrop.com')] %}
+    <a href="{{ item[2] }}" style="display:flex;align-items:center;gap:12px;padding:12px 0;text-decoration:none;color:var(--text);border-bottom:1px solid var(--border)">
+      <span style="font-size:1.3rem">{{ item[0] }}</span>
+      <div>
+        <div class="fw-700 text-sm">{{ item[1] }}</div>
+        <div class="text-xs text-muted">{{ item[3] }}</div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  <div style="height:20px"></div>
+</div>
+{% endblock %}

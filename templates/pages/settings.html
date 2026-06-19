@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Settings – DreamDrop{% endblock %}
+{% block topbar %}
+<div class="page-header">
+  <button class="back-btn" onclick="history.back()">←</button>
+  <span class="page-title">⚙️ Settings</span>
+</div>
+{% endblock %}
+{% block content %}
+<div class="page page-transition">
+  <!-- Appearance -->
+  <div class="card p-16 mb-16">
+    <div class="fw-800 mb-12">🎨 Appearance</div>
+    <div class="dark-toggle">
+      <div>
+        <div class="fw-600">Dark Mode</div>
+        <div class="text-xs text-muted">Switch to dark theme</div>
+      </div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="themeToggle">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Account -->
+  <div class="card p-16 mb-16">
+    <div class="fw-800 mb-12">🔐 Account</div>
+    <div id="changePasswordSection">
+      <form id="changePasswordForm">
+        <div class="form-group">
+          <label class="form-label">Current Password</label>
+          <input type="password" id="currentPassword" class="form-input" placeholder="••••••••">
+        </div>
+        <div class="form-group">
+          <label class="form-label">New Password</label>
+          <input type="password" id="newPassword" class="form-input" placeholder="Min 8 characters">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm New Password</label>
+          <input type="password" id="confirmNewPassword" class="form-input" placeholder="Repeat new password">
+        </div>
+        <div id="authError" class="alert alert-error" style="display:none"></div>
+        <button type="submit" class="btn btn-primary btn-full" id="changePwBtn" data-original="Change Password">Change Password</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Notifications -->
+  <div class="card p-16 mb-16">
+    <div class="fw-800 mb-12">🔔 Notifications</div>
+    <div class="dark-toggle">
+      <div><div class="fw-600">Order Updates</div></div>
+      <label class="toggle-switch">
+        <input type="checkbox" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="dark-toggle">
+      <div><div class="fw-600">Promotions & Offers</div></div>
+      <label class="toggle-switch">
+        <input type="checkbox" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Legal Links -->
+  <div class="menu-list mb-16">
+    <a href="/faq" class="menu-item"><span class="menu-icon">❓</span><span class="menu-text">FAQ</span><span class="menu-arrow">›</span></a>
+    <a href="/about" class="menu-item"><span class="menu-icon">ℹ️</span><span class="menu-text">About</span><span class="menu-arrow">›</span></a>
+    <a href="/contact" class="menu-item"><span class="menu-icon">📩</span><span class="menu-text">Contact Us</span><span class="menu-arrow">›</span></a>
+    <a href="/terms" class="menu-item"><span class="menu-icon">📄</span><span class="menu-text">Terms of Service</span><span class="menu-arrow">›</span></a>
+    <a href="/privacy" class="menu-item"><span class="menu-icon">🔒</span><span class="menu-text">Privacy Policy</span><span class="menu-arrow">›</span></a>
+    <a href="/shipping" class="menu-item"><span class="menu-icon">🚚</span><span class="menu-text">Shipping Policy</span><span class="menu-arrow">›</span></a>
+  </div>
+
+  <div class="text-center text-xs text-muted mb-16">DreamDrop v1.0.0 · Made with ❤️</div>
+  <div style="height:20px"></div>
+</div>
+<script type="module" src="/static/js/firebase-auth.js"></script>
+{% endblock %}

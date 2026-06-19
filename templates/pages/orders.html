@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}My Orders – DreamDrop{% endblock %}
+{% block topbar %}
+<div class="page-header">
+  <button class="back-btn" onclick="history.back()">←</button>
+  <span class="page-title">📦 My Orders</span>
+</div>
+{% endblock %}
+{% block content %}
+<div class="page page-transition">
+  {% if orders %}
+    {% for o in orders %}
+    <a href="/order/{{ o.id }}" style="text-decoration:none;display:block;margin-bottom:12px">
+      <div class="card p-16">
+        <div class="flex-between mb-8">
+          <span class="fw-700" style="font-size:.85rem">#{{ o.order_id }}</span>
+          <span class="status-badge status-{{ o.status }}">{{ o.status.replace('_',' ') | title }}</span>
+        </div>
+        <div style="display:flex;gap:12px;align-items:center">
+          <img src="{{ o.product_image or 'https://via.placeholder.com/60/EDE9FE/A78BFA?text=P' }}"
+               style="width:60px;height:60px;border-radius:10px;object-fit:cover">
+          <div style="flex:1">
+            <div class="fw-700 text-sm">{{ o.product_name | truncate(30) }}</div>
+            <div class="text-sm text-muted">Qty: {{ o.quantity }}</div>
+            <div class="fw-800 text-primary mt-8">₹{{ o.price }}</div>
+          </div>
+          <span style="color:var(--text3);font-size:1.2rem">›</span>
+        </div>
+        <div class="text-xs text-muted mt-8">
+          Ordered: {{ o.created_at[:10] if o.created_at else 'N/A' }}
+          {% if o.tracking_code %} · 📦 {{ o.tracking_code }}{% endif %}
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">📦</div>
+    <div class="empty-title">No Orders Yet</div>
+    <div class="empty-text">Your orders will appear here once you shop.</div>
+    <a href="/products" class="btn btn-primary">Start Shopping</a>
+  </div>
+  {% endif %}
+  <div style="height:20px"></div>
+</div>
+{% endblock %}
