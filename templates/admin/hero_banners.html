@@ -1,0 +1,73 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Hero Banners – Admin{% endblock %}
+{% block topbar_title %}🖼️ Hero Banners{% endblock %}
+{% block content %}
+<div class="page page-transition">
+  <div class="card p-16 mb-16">
+    <div class="fw-800 mb-12">➕ Add Banner</div>
+    <form action="/admin/hero-banners/add" method="POST" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <input type="file" name="image" class="form-input" accept="image/*">
+        <div class="form-hint">Upload via ImgBB API</div>
+      </div>
+      <div class="form-group">
+        <input type="text" name="title" class="form-input" placeholder="Banner Title">
+      </div>
+      <div class="form-group">
+        <input type="text" name="subtitle" class="form-input" placeholder="Subtitle">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group">
+          <input type="text" name="btn_text" class="form-input" placeholder="Button Text">
+        </div>
+        <div class="form-group">
+          <input type="text" name="btn_link" class="form-input" placeholder="Button Link">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group">
+          <input type="number" name="order" class="form-input" placeholder="Order (0=first)" value="0">
+        </div>
+        <label style="display:flex;align-items:center;gap:8px;padding-top:8px">
+          <input type="checkbox" name="active" checked> Active
+        </label>
+      </div>
+      <button type="submit" class="btn btn-primary btn-full">Add Banner</button>
+    </form>
+  </div>
+
+  {% for b in banners %}
+  <div class="card mb-10" style="overflow:hidden">
+    {% if b.image %}
+    <img src="{{ b.image }}" style="width:100%;height:120px;object-fit:cover">
+    {% else %}
+    <div style="height:80px;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.2rem">No Image</div>
+    {% endif %}
+    <div class="p-16">
+      <div class="flex-between mb-8">
+        <span class="fw-700 text-sm">{{ b.title or '(No title)' }}</span>
+        <span class="status-badge {% if b.active %}status-delivered{% else %}status-rejected{% endif %}">{{ 'Active' if b.active else 'Inactive' }}</span>
+      </div>
+      <div class="text-xs text-muted mb-10">{{ b.subtitle or '' }} · Order: {{ b.order or 0 }}</div>
+      <div style="display:flex;gap:8px">
+        <button onclick="toggleHeroBanner('{{ b.id }}')" class="btn btn-sm btn-secondary">{{ 'Deactivate' if b.active else 'Activate' }}</button>
+        <button onclick="deleteHeroBanner('{{ b.id }}')" class="btn btn-sm btn-danger">🗑️ Delete</button>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<script>
+async function toggleHeroBanner(bid) {
+  const res = await API.post(`/admin/hero-banners/${bid}/toggle`);
+  if (res.success) { Toast.show('Updated!', 'success'); location.reload(); }
+}
+async function deleteHeroBanner(bid) {
+  if (!confirm('Delete this banner?')) return;
+  const res = await API.post(`/admin/hero-banners/${bid}/delete`);
+  if (res.success) { Toast.show('Deleted!', 'success'); location.reload(); }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Scroll Banners – Admin{% endblock %}
+{% block topbar_title %}📢 Scroll Banners{% endblock %}
+{% block content %}
+<div class="page page-transition">
+  <div class="card p-16 mb-16">
+    <div class="fw-800 mb-12">➕ Add Scroll Banner</div>
+    <div class="form-group">
+      <input type="text" id="sbText" class="form-input" placeholder="Banner text / announcement">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Text Color</label>
+      <input type="color" id="sbColor" value="#FFFFFF" style="width:60px;height:36px;border:none;border-radius:8px;cursor:pointer">
+    </div>
+    <button class="btn btn-primary btn-full" onclick="addScrollBanner()">Add Banner</button>
+  </div>
+
+  {% for b in banners %}
+  <div class="card p-16 mb-10">
+    <div class="flex-between">
+      <div>
+        <div class="fw-700 text-sm" style="color:{{ b.color or 'var(--primary)' }}">{{ b.text }}</div>
+        <div class="text-xs text-muted mt-4">{{ 'Enabled' if b.enabled else 'Disabled' }}</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button onclick="toggleScrollBanner('{{ b.id }}')" class="btn btn-sm btn-secondary">{{ 'Disable' if b.enabled else 'Enable' }}</button>
+        <button onclick="deleteScrollBanner('{{ b.id }}')" class="btn btn-sm btn-danger">🗑️</button>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<script>
+async function addScrollBanner() {
+  const text = document.getElementById('sbText').value.trim();
+  const color = document.getElementById('sbColor').value;
+  if (!text) { Toast.show('Enter banner text', 'error'); return; }
+  const res = await API.post('/admin/scroll-banners/add', { text, color });
+  if (res.success) { Toast.show('Banner added!', 'success'); location.reload(); }
+}
+async function toggleScrollBanner(bid) {
+  const res = await API.post(`/admin/scroll-banners/${bid}/toggle`);
+  if (res.success) { Toast.show('Updated!', 'success'); location.reload(); }
+}
+async function deleteScrollBanner(bid) {
+  if (!confirm('Delete this banner?')) return;
+  const res = await API.post(`/admin/scroll-banners/${bid}/delete`);
+  if (res.success) { Toast.show('Deleted!', 'success'); location.reload(); }
+}
+</script>
+{% endblock %}

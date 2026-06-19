@@ -1,0 +1,62 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Orders – Admin{% endblock %}
+{% block topbar_title %}📦 Orders{% endblock %}
+{% block content %}
+<div class="page page-transition">
+  <!-- Filter -->
+  <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;margin-bottom:14px">
+    {% for s in ['','pending','packed','shipped','out_for_delivery','delivered','rejected'] %}
+    <a href="/admin/orders{% if s %}?status={{ s }}{% endif %}"
+       style="white-space:nowrap;padding:6px 14px;border-radius:20px;text-decoration:none;font-size:.78rem;font-weight:600;border:2px solid var(--border);
+              background:{{ 'var(--primary)' if status_filter == s else 'var(--bg2)' }};
+              color:{{ '#fff' if status_filter == s else 'var(--text)' }}">
+      {{ 'All' if not s else s.replace('_',' ').title() }}
+    </a>
+    {% endfor %}
+  </div>
+
+  {% for o in orders %}
+  <div class="card p-16 mb-10">
+    <div class="flex-between mb-8">
+      <span class="fw-700 text-sm">#{{ o.order_id }}</span>
+      <span class="status-badge status-{{ o.status }}">{{ o.status.replace('_',' ') }}</span>
+    </div>
+    <div class="text-sm mb-8"><b>{{ o.user_name }}</b> · {{ o.user_email }}</div>
+    <div class="text-sm">{{ o.product_name | truncate(25) }} × {{ o.quantity }} · <b>₹{{ o.price }}</b></div>
+    {% if o.tracking_code %}<div class="text-xs text-muted mt-4">Tracking: {{ o.tracking_code }}</div>{% endif %}
+    <div class="text-xs text-muted mt-4">{{ o.created_at[:10] if o.created_at else '' }}</div>
+
+    <!-- Update form -->
+    <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border)">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+        {% for s in ['pending','packed','shipped','out_for_delivery','delivered','rejected'] %}
+        <button onclick="quickStatus('{{ o.id }}','{{ s }}')"
+                style="padding:5px 10px;border-radius:20px;border:2px solid var(--border);background:{{ 'var(--primary)' if o.status==s else 'var(--bg2)' }};color:{{ '#fff' if o.status==s else 'var(--text)' }};font-size:.7rem;font-weight:700;cursor:pointer">
+          {{ s.replace('_',' ').title() }}
+        </button>
+        {% endfor %}
+      </div>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="track_{{ o.id }}" class="form-input" placeholder="Tracking code" value="{{ o.tracking_code or '' }}" style="font-size:.8rem;padding:8px 12px">
+        <input type="date" id="deliv_{{ o.id }}" class="form-input" value="{{ o.estimated_delivery or '' }}" style="font-size:.8rem;padding:8px 12px;max-width:140px">
+      </div>
+      <button class="btn btn-primary btn-sm mt-8" onclick="updateOrderStatus('{{ o.id }}','{{ o.status }}',document.getElementById('track_{{ o.id }}').value,document.getElementById('deliv_{{ o.id }}').value)">
+        💾 Save
+      </button>
+    </div>
+  </div>
+  {% endfor %}
+
+  {% if not orders %}
+  <div class="empty-state"><div class="empty-icon">📦</div><div class="empty-title">No Orders</div></div>
+  {% endif %}
+</div>
+
+<script>
+async function quickStatus(oid, status) {
+  const track = document.getElementById('track_' + oid)?.value || '';
+  const deliv = document.getElementById('deliv_' + oid)?.value || '';
+  await updateOrderStatus(oid, status, track, deliv);
+}
+</script>
+{% endblock %}

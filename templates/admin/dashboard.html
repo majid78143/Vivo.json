@@ -1,0 +1,73 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Dashboard – Admin{% endblock %}
+{% block topbar_title %}📊 Dashboard{% endblock %}
+{% block content %}
+<div class="page page-transition">
+  <div class="stat-grid" style="padding:0;margin-bottom:16px">
+    {% for label, val, icon in [('Users',stats.users,'👥'),('Orders',stats.orders,'📦'),('Products',stats.products,'🛍️'),('Winners',stats.winners,'🏆')] %}
+    <div class="stat-box">
+      <div style="font-size:1.5rem;margin-bottom:4px">{{ icon }}</div>
+      <div class="stat-box-value">{{ val }}</div>
+      <div class="stat-box-label">{{ label }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="admin-nav" style="padding:0;margin-bottom:16px">
+    {% for href, icon, label in [('/admin/users','👥','Users'),('/admin/orders','📦','Orders'),('/admin/products','🛍️','Products'),('/admin/chats','💬','Chats'),('/admin/notifications','🔔','Notifications'),('/admin/coupons','🎫','Coupons'),('/admin/winners','🏆','Winners'),('/admin/hero-banners','🖼️','Hero Banners'),('/admin/scroll-banners','📢','Scroll Banners'),('/admin/api-config','⚙️','API Config'),('/admin/analytics','📊','Analytics'),('/admin/settings','🔧','Settings')] %}
+    <a href="{{ href }}" class="admin-nav-item">
+      <span class="admin-nav-icon">{{ icon }}</span>
+      <span class="admin-nav-label">{{ label }}</span>
+    </a>
+    {% endfor %}
+  </div>
+
+  {% if recent_orders %}
+  <div class="fw-800 mb-12">📦 Recent Orders</div>
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead><tr><th>ID</th><th>Customer</th><th>Status</th><th>Price</th></tr></thead>
+      <tbody>
+        {% for o in recent_orders %}
+        <tr onclick="window.location='/admin/orders'" style="cursor:pointer">
+          <td class="fw-700">#{{ o.order_id[:8] }}</td>
+          <td>{{ o.user_name | truncate(12) }}</td>
+          <td><span class="status-badge status-{{ o.status }}">{{ o.status }}</span></td>
+          <td>₹{{ o.price }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+
+  <!-- Quick actions -->
+  <div class="card p-16 mt-16">
+    <div class="fw-800 mb-12">⚡ Quick Actions</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <button class="btn btn-primary" onclick="showNotifModal()">📢 Send Notification to All</button>
+      <a href="/admin/products" class="btn btn-secondary">➕ Add New Product</a>
+      <a href="/admin/winners" class="btn btn-outline">🏆 Add Winner</a>
+    </div>
+  </div>
+</div>
+
+<!-- Notification modal -->
+<div id="notifModal" style="display:none" class="modal-overlay" onclick="if(event.target===this)this.style.display='none'">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">📢 Send Notification</div>
+    <div class="form-group">
+      <label class="form-label">Title</label>
+      <input type="text" id="notifTitle" class="form-input" placeholder="Notification title">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Message</label>
+      <textarea id="notifBody" class="form-input" rows="3" placeholder="Message body"></textarea>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="sendAdminNotification('all',document.getElementById('notifTitle').value,document.getElementById('notifBody').value).then(()=>document.getElementById('notifModal').style.display='none')">Send to All Users</button>
+  </div>
+</div>
+
+<script>function showNotifModal(){document.getElementById('notifModal').style.display='flex';}</script>
+{% endblock %}

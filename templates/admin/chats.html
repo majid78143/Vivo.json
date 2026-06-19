@@ -1,0 +1,29 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Chats – Admin{% endblock %}
+{% block topbar_title %}💬 Chat Rooms{% endblock %}
+{% block content %}
+<div class="page page-transition">
+  {% for room in chat_rooms %}
+  <a href="/admin/chats/{{ room.uid or room.id }}" style="text-decoration:none;display:block;margin-bottom:10px">
+    <div class="card p-16 {% if room.get('unread_admin') %}" style="border-left:4px solid var(--primary){% endif %}">
+      <div style="display:flex;gap:12px;align-items:center">
+        <div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;color:#fff;font-size:1rem;flex-shrink:0">
+          {{ room.name[0].upper() if room.get('name') else '?' }}
+        </div>
+        <div style="flex:1">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span class="fw-700 text-sm">{{ room.get('name','Unknown') }}</span>
+            {% if room.get('unread_admin') %}<span style="width:8px;height:8px;background:var(--primary);border-radius:50%;display:block"></span>{% endif %}
+          </div>
+          <div class="text-xs text-muted">{{ room.get('last_message','')[:40] }}</div>
+          <div class="text-xs text-muted">{{ room.get('email','') }}</div>
+        </div>
+      </div>
+    </div>
+  </a>
+  {% endfor %}
+  {% if not chat_rooms %}
+  <div class="empty-state"><div class="empty-icon">💬</div><div class="empty-title">No Chats</div></div>
+  {% endif %}
+</div>
+{% endblock %}

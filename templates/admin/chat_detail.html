@@ -1,0 +1,58 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Chat – Admin{% endblock %}
+{% block topbar_title %}💬 {{ chat_user.get('name','User') }}{% endblock %}
+{% block content %}
+<div style="padding-bottom:calc(70px + 60px)">
+  <div class="chat-messages" id="chatMessages">
+    {% for msg in messages %}
+    <div class="msg-bubble msg-{{ 'admin' if msg.sender == 'admin' else 'user' }}">
+      {% if msg.image %}<img src="{{ msg.image }}" class="msg-image" onclick="openImg('{{ msg.image }}')">{% endif %}
+      {% if msg.text %}<div>{{ msg.text }}</div>{% endif %}
+      <div class="msg-time">
+        {{ msg.sent_at[11:16] if msg.sent_at else '' }}
+        {% if msg.sender == 'user' %}
+          · {% if msg.seen %}Seen ✓✓{% else %}Sent ✓{% endif %}
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="chat-input-bar">
+  <form id="adminChatForm" style="display:flex;gap:8px;width:100%;align-items:center">
+    <label for="adminChatImage" style="cursor:pointer;font-size:1.3rem;flex-shrink:0">📎</label>
+    <input type="file" id="adminChatImage" accept="image/*" style="display:none">
+    <input type="text" id="adminChatInput" class="chat-input" placeholder="Reply..." autocomplete="off">
+    <button type="submit" class="chat-send-btn">➤</button>
+  </form>
+</div>
+
+<script>
+const chatUid = '{{ chat_uid }}';
+document.getElementById('adminChatForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const text = document.getElementById('adminChatInput').value.trim();
+  const imgFile = document.getElementById('adminChatImage').files[0];
+  if (!text && !imgFile) return;
+  const fd = new FormData();
+  fd.append('message', text);
+  if (imgFile) fd.append('image', imgFile);
+  const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+  try {
+    const r = await fetch(`/admin/chats/${chatUid}/reply`, { method:'POST', headers:{'X-CSRFToken':csrfToken}, body:fd });
+    const data = await r.json();
+    if (data.success) {
+      document.getElementById('adminChatInput').value = '';
+      document.getElementById('adminChatImage').value = '';
+      const div = document.createElement('div');
+      div.className = 'msg-bubble msg-admin fade-in';
+      div.innerHTML = `${text ? '<div>'+text+'</div>' : ''}${data.message.image ? '<img src="'+data.message.image+'" class="msg-image">' : ''}<div class="msg-time">Now</div>`;
+      document.getElementById('chatMessages').appendChild(div);
+      document.getElementById('chatMessages').scrollTop = 99999;
+    }
+  } catch(e) { Toast.show('Failed to send', 'error'); }
+});
+setTimeout(() => { const m = document.getElementById('chatMessages'); if(m) m.scrollTop = m.scrollHeight; }, 100);
+</script>
+{% endblock %}

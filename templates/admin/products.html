@@ -1,0 +1,73 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Products – Admin{% endblock %}
+{% block topbar_title %}🛍️ Products{% endblock %}
+{% block content %}
+<div class="page page-transition">
+  <!-- Add product -->
+  <div class="card p-16 mb-16">
+    <div class="fw-800 mb-12">➕ Add Product</div>
+    <form action="/admin/products/add" method="POST" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <input type="text" name="name" class="form-input" placeholder="Product Name" required>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-group">
+          <input type="number" name="price" class="form-input" placeholder="Price ₹" step="0.01" required>
+        </div>
+        <div class="form-group">
+          <input type="number" name="stock" class="form-input" placeholder="Stock" value="10">
+        </div>
+      </div>
+      <div class="form-group">
+        <input type="text" name="category" class="form-input" placeholder="Category">
+      </div>
+      <div class="form-group">
+        <select name="type" class="form-input">
+          <option value="physical">Physical Product</option>
+          <option value="digital">Digital Product</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <textarea name="description" class="form-input" placeholder="Description" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <input type="file" name="image" class="form-input" accept="image/*">
+        <div class="form-hint">Upload via ImgBB (set API key first)</div>
+      </div>
+      <label style="display:flex;align-items:center;gap:8px;margin-bottom:12px;cursor:pointer">
+        <input type="checkbox" name="featured"> <span class="text-sm">Featured Product</span>
+      </label>
+      <button type="submit" class="btn btn-primary btn-full">Add Product</button>
+    </form>
+  </div>
+
+  <!-- Products list -->
+  {% for p in products %}
+  <div class="card p-16 mb-10">
+    <div style="display:flex;gap:12px;align-items:center">
+      <img src="{{ p.image or 'https://via.placeholder.com/50/EDE9FE/A78BFA?text=P' }}"
+           style="width:50px;height:50px;border-radius:10px;object-fit:cover">
+      <div style="flex:1">
+        <div class="fw-700 text-sm">{{ p.name }}</div>
+        <div class="text-xs text-muted">₹{{ p.price }} · Stock: {{ p.stock or 0 }} · {{ p.type or 'physical' }}</div>
+        <div class="text-xs text-muted">{{ p.category or 'Uncategorized' }}{% if p.featured %} · ⭐ Featured{% endif %}</div>
+      </div>
+      <button onclick="deleteProduct('{{ p.id }}')" class="btn btn-danger btn-sm">🗑️</button>
+    </div>
+  </div>
+  {% endfor %}
+  {% if not products %}
+  <div class="empty-state"><div class="empty-icon">🛍️</div><div class="empty-title">No Products</div></div>
+  {% endif %}
+</div>
+
+<script>
+async function deleteProduct(pid) {
+  if (!confirm('Delete this product?')) return;
+  const res = await API.post(`/admin/products/${pid}/delete`);
+  if (res.success) { Toast.show('Deleted!', 'success'); location.reload(); }
+  else Toast.show(res.error || 'Failed', 'error');
+}
+</script>
+{% endblock %}

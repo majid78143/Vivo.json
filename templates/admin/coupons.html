@@ -1,0 +1,67 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Coupons – Admin{% endblock %}
+{% block topbar_title %}🎫 Coupons{% endblock %}
+{% block content %}
+<div class="page page-transition">
+  <div class="card p-16 mb-16">
+    <div class="fw-800 mb-12">➕ Add Coupon</div>
+    <div class="form-group">
+      <input type="text" id="cCode" class="form-input" placeholder="COUPON CODE" style="text-transform:uppercase">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="form-group">
+        <input type="number" id="cDiscount" class="form-input" placeholder="Discount amount">
+      </div>
+      <div class="form-group">
+        <select id="cType" class="form-input">
+          <option value="flat">Flat (₹)</option>
+          <option value="percent">Percent (%)</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <input type="number" id="cMaxUses" class="form-input" placeholder="Max uses" value="100">
+    </div>
+    <button class="btn btn-primary btn-full" onclick="addCoupon()">Add Coupon</button>
+  </div>
+
+  {% for c in coupons %}
+  <div class="coupon-card">
+    <div class="flex-between">
+      <div>
+        <div class="coupon-code">{{ c.code }}</div>
+        <div class="coupon-discount">
+          {% if c.type == 'percent' %}{{ c.discount }}% OFF{% else %}₹{{ c.discount }} OFF{% endif %}
+          · Used: {{ c.used_count or 0 }}/{{ c.max_uses or '∞' }}
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;flex-direction:column">
+        <button onclick="toggleCoupon('{{ c.id }}')" class="btn btn-sm {% if c.active %}btn-secondary{% else %}btn-primary{% endif %}">
+          {{ 'Disable' if c.active else 'Enable' }}
+        </button>
+        <span class="status-badge {% if c.active %}status-delivered{% else %}status-rejected{% endif %}">
+          {{ 'Active' if c.active else 'Inactive' }}
+        </span>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<script>
+async function addCoupon() {
+  const code = document.getElementById('cCode').value.trim().toUpperCase();
+  const discount = parseFloat(document.getElementById('cDiscount').value);
+  const type = document.getElementById('cType').value;
+  const max_uses = parseInt(document.getElementById('cMaxUses').value) || 100;
+  if (!code || isNaN(discount)) { Toast.show('Fill all fields', 'error'); return; }
+  const res = await API.post('/admin/coupons/add', { code, discount, type, max_uses });
+  if (res.success) { Toast.show('Coupon added!', 'success'); location.reload(); }
+  else Toast.show(res.error || 'Failed', 'error');
+}
+async function toggleCoupon(cid) {
+  const res = await API.post(`/admin/coupons/${cid}/toggle`);
+  if (res.success) { Toast.show('Updated!', 'success'); location.reload(); }
+}
+</script>
+{% endblock %}

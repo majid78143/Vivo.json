@@ -1,0 +1,45 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Winners – Admin{% endblock %}
+{% block topbar_title %}🏆 Winners{% endblock %}
+{% block content %}
+<div class="page page-transition">
+  <div class="card p-16 mb-16">
+    <div class="fw-800 mb-12">➕ Add Winner</div>
+    <div class="form-group">
+      <input type="text" id="wName" class="form-input" placeholder="Winner Name">
+    </div>
+    <div class="form-group">
+      <input type="text" id="wPrize" class="form-input" placeholder="Prize Won (e.g. iPhone 15)">
+    </div>
+    <div class="form-group">
+      <input type="url" id="wPhoto" class="form-input" placeholder="Photo URL (optional)">
+    </div>
+    <button class="btn btn-primary btn-full" onclick="addWinner()">Add Winner 🏆</button>
+  </div>
+
+  {% for w in winners %}
+  <div class="winner-card">
+    <img src="{{ w.photo or 'https://ui-avatars.com/api/?name=' ~ w.get('name','W') ~ '&size=50&background=A78BFA&color=fff' }}"
+         class="winner-avatar">
+    <div class="winner-info">
+      <div class="winner-name">{{ w.get('name','Anonymous') }}</div>
+      <div class="winner-prize">🎁 {{ w.get('prize','') }}</div>
+      <div class="winner-time">{{ w.get('won_at','')[:10] }}</div>
+    </div>
+    <div class="winner-badge">🏆</div>
+  </div>
+  {% endfor %}
+</div>
+
+<script>
+async function addWinner() {
+  const name = document.getElementById('wName').value.trim();
+  const prize = document.getElementById('wPrize').value.trim();
+  const photo = document.getElementById('wPhoto').value.trim();
+  if (!name || !prize) { Toast.show('Name and prize required', 'error'); return; }
+  const res = await API.post('/admin/winners/add', { name, prize, photo });
+  if (res.success) { Toast.show('Winner added! 🏆', 'success'); location.reload(); }
+  else Toast.show(res.error || 'Failed', 'error');
+}
+</script>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Users – Admin{% endblock %}
+{% block topbar_title %}👥 Users ({{ users | length }}){% endblock %}
+{% block content %}
+<div class="page page-transition">
+  {% for u in users %}
+  <div class="card p-16 mb-10">
+    <div style="display:flex;gap:12px;align-items:center;margin-bottom:10px">
+      <img src="{{ u.photo or 'https://ui-avatars.com/api/?name=' ~ u.get('name','U') ~ '&size=44&background=A78BFA&color=fff' }}"
+           style="width:44px;height:44px;border-radius:50%">
+      <div style="flex:1">
+        <div class="fw-700 text-sm">{{ u.get('name','Unknown') }}
+          {% if u.get('vip') %}<span style="color:#F59E0B;font-size:.7rem">👑 VIP</span>{% endif %}
+          {% if u.get('banned') %}<span style="color:#EF4444;font-size:.7rem">🚫 Banned</span>{% endif %}
+        </div>
+        <div class="text-xs text-muted">{{ u.get('email','') }}</div>
+        <div class="text-xs text-muted">💰 {{ u.get('coins',0) }} coins · 👥 {{ u.get('referral_count',0) }} refs</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn btn-sm {% if u.get('banned') %}btn-secondary{% else %}btn-danger{% endif %}"
+              onclick="toggleBan('{{ u.id }}', {{ 'false' if u.get('banned') else 'true' }}, this)">
+        {{ 'Unban' if u.get('banned') else 'Ban' }}
+      </button>
+      <button class="btn btn-sm {% if u.get('vip') %}btn-secondary{% else %}btn-primary{% endif %}"
+              onclick="toggleVip('{{ u.id }}', {{ 'false' if u.get('vip') else 'true' }}, this)">
+        {{ 'Remove VIP' if u.get('vip') else 'Make VIP' }}
+      </button>
+      <button class="btn btn-sm btn-outline"
+              onclick="sendAdminNotification('{{ u.id }}', prompt('Title:') || '', prompt('Message:') || '')">
+        📢 Notify
+      </button>
+    </div>
+    <div class="text-xs text-muted mt-8">Joined: {{ u.get('created_at','')[:10] }}</div>
+  </div>
+  {% endfor %}
+  {% if not users %}
+  <div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">No Users</div></div>
+  {% endif %}
+</div>
+
+<script>
+async function toggleBan(uid, ban, btn) {
+  const res = await API.post(`/admin/users/${uid}/ban`, { ban });
+  if (res.success) { Toast.show(ban ? 'User banned' : 'User unbanned', ban ? 'error' : 'success'); location.reload(); }
+}
+async function toggleVip(uid, vip, btn) {
+  const res = await API.post(`/admin/users/${uid}/vip`, { vip });
+  if (res.success) { Toast.show(vip ? 'VIP granted!' : 'VIP removed', 'success'); location.reload(); }
+}
+</script>
+{% endblock %}
